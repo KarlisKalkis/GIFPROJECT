@@ -1,6 +1,7 @@
 package com.example.gifproject;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,13 +18,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.gifproject.databinding.ActivityMainBinding;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +37,6 @@ import java.util.Collections;
 public class MainActivity extends AppCompatActivity implements DataAdapter.OnItemClickListener{
 
     private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
 
     ListView listView;
     ArrayAdapter<String> arrayAdapter;
@@ -54,7 +55,9 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnIte
     private Object recyclerViewWidth;
     private Object singleItemWidth;
     private Context context;
+    private RecyclerView recyclerView;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -66,9 +69,13 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnIte
         rView.setLayoutManager(new GridLayoutManager(this, 2));
         rView.addItemDecoration(new SpaceItemDecoration(10));
 
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
+        gridLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
         setContentView(R.layout.activity_main);
 
-        listView = findViewById(R.id.listview);
+        listView = findViewById(R.id.recyclerView);
 
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
         listView.setAdapter(arrayAdapter);
