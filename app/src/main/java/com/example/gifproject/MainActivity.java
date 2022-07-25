@@ -4,8 +4,16 @@ package com.example.gifproject;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -22,15 +30,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity implements DataAdapter.OnItemClickListener{
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
+    ListView listView;
+    ArrayAdapter<String> arrayAdapter;
+
+
     RecyclerView rView;
     ArrayList<DataModel> dataModelArrayList = new ArrayList<>();
     DataAdapter dataAdapter;
+
 
     public static final String API_KEY = "PHMfjVVZajwpABTbLu6GGAuywUJjup1r"; // API KEY TO GIPHY
     public static final String BASE_URL = "https://api.giphy.com/v1/gifs/trending?api_key="; // Base url for trending GIFS
@@ -40,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnIte
     private Object recyclerViewWidth;
     private Object singleItemWidth;
     private Context context;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +65,13 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnIte
         rView.setHasFixedSize(true);
         rView.setLayoutManager(new GridLayoutManager(this, 2));
         rView.addItemDecoration(new SpaceItemDecoration(10));
+
+        setContentView(R.layout.activity_main);
+
+        listView = findViewById(R.id.listview);
+
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        listView.setAdapter(arrayAdapter);
 
 
         // JSON CODE FOR GETTING DATA FROM GIPHY
@@ -104,5 +124,33 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnIte
         startActivity(fullView);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+
+        MenuItem menuItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint("Here is place to write what you want");
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                arrayAdapter.getFilter().filter(newText);
+
+                return false;
+            }
+        });
+
+
+        return super.onCreateOptionsMenu(menu);
     }
+}
 
